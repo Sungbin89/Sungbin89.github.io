@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@500&display=swap" rel="stylesheet">
+        <script src="./JQ/jQuery360.min.js"></script>
+        <link rel="stylesheet" href="./ARRAY_CAL.css">
+        <title>행렬 계산기</title>
+        <link rel="shortcut icon" type="image" href="./icon.png">
+        <style>
+        </style>
+    </head>
+    <body>
+        <div class="main_box">
+            <div class="left_input_area">
+                <input id="x_array_l" class="input_design" type="number"  min="1" max="12" placeholder="행">
+                <input id="y_array_l"class="input_design" type="number" min="1" max="12" placeholder="열">
+            </div>
+            <div class="button_area">
+                <div id="button_random" class="button_design">자동완성</div>
+                <div id="button_empty" class="button_design">직접입력</div>
+                <div id="button_plus" class="button_design">더하기</div>
+                <div id="button_minus" class="button_design">빼기</div>
+                <div id="button_multi" class="button_design">곱하기</div>
+                <div id="button_reset" class="button_design">Reset</div>
+            </div> 
+            <div class="right_input_area">
+                <input id="x_array_r" class="input_design" type="number" min="1" max="12" placeholder="행">
+                <input id="y_array_r" class="input_design" type="number" min="1" max="12" placeholder="열">
+            </div>
+            <p class="explain_ment">A 배열</p>
+            <p class="explain_ment">결과배열</p>
+            <p class="explain_ment">B 배열</p>
+            <div class="print_div">
+                <div id="print_area_l" class="print_area_l"></div>
+            </div>
+            <div class="print_div">
+                <div id="print_result" class="print_result"></div>
+            </div>
+            <div class="print_div">
+                <div id="print_area_r" class="print_area_r"></div>
+            </div>
+        </div>
+        <div id="wrong_box_t" class="alert_div">좌측 행과 우측 열<br>좌측 열과 우측 행이 같아야합니다.
+            <div id="back_plus_button" class="back_button">돌아가기
+            </div>
+        </div>
+        <div id="wrong_box_m" class="alert_div">좌우 행렬의<br>행과열이 서로 같아야 합니다.
+            <div id="back_multi_button" class="back_button">돌아가기</div>
+        </div>
+        <div id="wrong_box_z" class="alert_div">좌우 행렬의<br>행과열이 서로 같아야 합니다.
+            <div id="back_zero_button" class="back_button">돌아가기</div>
+        </div>
+        <div id="wrong_box_w" class="alert_div">행과 열에<br>십진수를입력해주세요.
+            <div id="back_w_button" class="back_button">돌아가기</div>
+        </div>
+        <script>
+                class generate_matrix{
+                    constructor(id_num, x_array, y_array){
+                        this.x_array = x_array > 0 ? x_array : "";
+                        this.y_array = y_array;
+                        this.id_num = id_num;
+                        this.return_left = this.array_left_bank();
+                        this.return_right = this.array_right_bank();
+                        this.check_comma = this.add_comma();
+                    };
+                    make_random_number(){
+                        let empty_array = [];
+                        let empty_string = "";
+                        let i=0;
+                        let j=0;
+                        while(i<this.x_array) {
+                            empty_array.push([]);
+                            while(j<this.y_array){
+                                empty_array[i][j] = Math.floor(Math.random()*(99-0+1)+0);
+                                empty_string +='<input id="'+this.id_num+i+'_'+j+'" class="each_cell" type="number" value="'+Number(empty_array[i][j])+'">';
+                                j++;
+                            };
+                            j=0;
+                            i++;
+                        };
+                        i=0;
+                        return empty_string;
+                    };
+                    make_empty_number(){
+                        let empty_array = [];
+                        let empty_string = "";
+                        let i=0;
+                        let j=0;
+                        while(i<this.x_array) {
+                            empty_array.push([]);
+                            while(j<this.y_array){
+                                empty_array[i][j] = 0;
+                                empty_string +='<input id="'+this.id_num+i+'_'+j+'" class="each_cell" type="number" value="'+Number(empty_array[i][j])+'">';
+                                j++;
+                            };
+                            j=0;
+                            i++;
+                        };
+                        i=0;
+                        return empty_string;
+                    };
+                    
+                    array_left_bank = () => {
+                        let empty_left_bank = [];
+                        let div_string = "";
+                        let i=0;
+                        let j=0;
+                        while(i<this.x_array){
+                            empty_left_bank.push([]);
+                            while(j<this.y_array){
+                                empty_left_bank[i][j]=$("#"+this.id_num+i+'_'+j).val();
+                                j++; 
+                            };
+                            j=0;
+                            i++;
+                        };
+                        return empty_left_bank;
+                    };
+                    array_right_bank = () => {
+                        let empty_right_bank = [];
+                        let div_string = "";
+                        let i=0;
+                        let j=0;
+                        while(i<this.x_array){
+                            empty_right_bank.push([]);
+                            while(j<this.y_array){
+                                empty_right_bank[i][j]=$("#"+this.id_num+i+'_'+j).val();
+                                j++;
+                            };
+                            j=0;
+                            i++;
+                        };
+                        return empty_right_bank;
+                    };
+                    plus_two = (arg1, arg2) => {
+                        let i=0;
+                        let j=0;
+                        let part_sum = "";
+                        let array_string ="";
+                        if( arg1.length == arg2.length && arg1[0].length == arg2[0].length){
+                            while(i<this.x_array){
+                                while(j<this.x_array){
+                                    part_sum = parseInt(arg1[i][j]) + parseInt(arg2[i][j]);
+                                    array_string += '<div class="result_cell">'+part_sum+ '</div>'
+                                    j++;
+                                };
+                                j=0;
+                                i++;
+                            };
+                            return array_string;
+                        } else {
+                            $("#wrong_box_t").css("display","block");
+                        };
+                    };
+                    minus_two = (arg1, arg2) => {
+                        let i=0;
+                        let j=0;
+                        let part_sum = "";
+                        let array_string ="";
+                        if( arg1.length == arg2.length && arg1[0].length == arg2[0].length){
+                            while(i<this.x_array){
+                                while(j<this.x_array){
+                                    part_sum = parseInt(arg1[i][j]) - parseInt(arg2[i][j]);
+                                    array_string += '<div class="result_cell">'+part_sum+ '</div>'
+                                    j++;
+                                };
+                                j=0;
+                                i++;
+                            };
+                            return array_string;
+                        } else {
+                            $("#wrong_box_t").css("display","block");
+                        };
+                    };
+                    multi_two = (arg1, arg2) => {
+                        let i=0;
+                        let j=0;
+                        let k=0;
+                        let part_sum = 0;
+                        let array_string ="";
+                        if( arg1.length == arg2[0].length && arg1[0].length == arg2.length){
+                            while(i<arg1.length){
+                                while(j<arg1.length){
+                                    while(k<arg1[0].length){
+                                        part_sum += parseInt(arg1[i][k]) * parseInt(arg2[k][j]);
+                                        k++;
+                                    };
+                                    array_string += '<div class="result_cell">' +this.add_comma(part_sum) + '</div>';
+                                    part_sum=0;
+                                    k=0;
+                                    j++;
+                                };
+                                j=0;
+                                i++;
+                            };
+                            return array_string;
+                        } else {
+                            $("#wrong_box_m").css("display","block");
+                        };
+                    };
+                    add_comma(arg){
+                        let comma_length= 1;
+                        let comma_array="";
+                        let without_comma="";
+                        let result_number=String(arg);
+                        let string_revers="";
+                        let i=0;
+                        while(i<result_number.length){
+                            if(result_number != ","){
+                                without_comma += result_number[i];
+                            };
+                            i++;
+                        };
+                        i=without_comma.length-1;
+                        while(i>=0){
+                            comma_array+=without_comma[i];
+                            if(comma_length%3 == 0 && i !=0){
+                                comma_array+=(",");
+                            };
+                            comma_length++;
+                            i--;
+                        };
+                        i=comma_array.length-1;
+                        while(i>=0){
+                            string_revers+=(comma_array[i]);
+                            i--;
+                        };
+                        return string_revers;
+                    };
+                };
+                (check_number = () =>{
+                let check_input = /^(([1-9])|(1[0-2])){0,1}$/;
+                $("#x_array_l").on("keyup", function(){
+                    !check_input.test($("#x_array_l").val()) && $(".input_design").val("") && $("#wrong_box_w").css("display", "block");
+                });
+                $("#x_array_r").on("keyup", function(){
+                    !check_input.test($("#x_array_r").val()) && $(".input_design").val("") && $("#wrong_box_w").css("display", "block");
+                });
+                $("#y_array_l").on("keyup", function(){
+                    !check_input.test($("#y_array_l").val()) && $(".input_design").val("") && $("#wrong_box_w").css("display", "block");
+                });
+                $("#y_array_r").on("keyup", function(){
+                    !check_input.test($("#y_array_r").val()) && $(".input_design").val("") && $("#wrong_box_w").css("display", "block");
+                });
+                })();
+                $(window).on("click", function(e) {
+                    switch(e.target.id){
+                        case 'button_random':
+                            $("#wrong_box_t").css("display", "none");
+                            $("#wrong_box_m").css("display", "none");
+                            make_left_array = new generate_matrix('each_idl',$("#x_array_l").val(), $("#y_array_l").val());
+                            make_right_array = new generate_matrix('each_idr', $("#x_array_r").val(), $("#y_array_r").val());
+                            $(".print_area_l").css("width", 50*$("#y_array_l").val()+'px').css("height", 50*$("#x_array_l").val()+'px');
+                            $(".print_area_r").css("width", 50*$("#y_array_r").val()+'px').css("height", 50*$("#x_array_r").val()+'px');
+                            $("#print_area_l").html(make_left_array.make_random_number());
+                            $("#print_area_r").html(make_right_array.make_random_number());
+                            break;
+                        case 'button_empty':
+                            $("#wrong_box_t").css("display", "none");
+                            $("#wrong_box_m").css("display", "none");
+                            make_left_array = new generate_matrix('each_idl',$("#x_array_l").val(), $("#y_array_l").val()); 
+                            make_right_array = new generate_matrix('each_idr', $("#x_array_r").val(), $("#y_array_r").val()); 
+                            $(".print_area_l").css("width", 50*$("#y_array_l").val()+'px').css("height", 50*$("#x_array_l").val()+'px');
+                            $(".print_area_r").css("width", 50*$("#y_array_r").val()+'px').css("height", 50*$("#x_array_r").val()+'px');
+                            $("#print_area_l").html(make_left_array.make_empty_number());
+                            $("#print_area_r").html(make_right_array.make_empty_number());
+                            break;
+                        case 'button_plus':
+                            $("#wrong_box_t").css("display", "none");
+                            $("#wrong_box_m").css("display", "none");
+                            $("#print_result").html("");
+                            bank_plus_left = new generate_matrix('each_idl',$("#x_array_l").val(), $("#y_array_l").val());
+                            bank_plus_right = new generate_matrix('each_idr', $("#x_array_r").val(), $("#y_array_r").val());
+                            plus_div = new generate_matrix('each_id', $("#x_array_r").val(), $("#y_array_r").val());
+                            $(".print_result").css("width", 50*($("#x_array_l").val())+'px').css("height", 50*($("#x_array_l").val())+'px');
+                            $("#print_result").html(plus_div.plus_two(bank_plus_left.array_left_bank(),bank_plus_right.array_right_bank()));
+                            break;
+                        case 'button_minus':
+                            $("#wrong_box_t").css("display", "none");
+                            $("#wrong_box_m").css("display", "none");
+                            $("#print_result").html("");
+                            bank_minus_left = new generate_matrix('each_idl',$("#x_array_l").val(), $("#y_array_l").val());
+                            bank_minus_right = new generate_matrix('each_idr', $("#x_array_r").val(), $("#y_array_r").val());
+                            minus_div = new generate_matrix('each_id', $("#x_array_r").val(), $("#y_array_r").val());
+                            $(".print_result").css("width", 50*($("#x_array_l").val())+'px').css("height", 50*($("#x_array_l").val())+'px');
+                            $("#print_result").html(minus_div.minus_two(bank_minus_left.array_left_bank(),bank_minus_right.array_right_bank()));
+                            break;
+                        case 'button_multi':
+                            $("#wrong_box_t").css("display", "none");
+                            $("#wrong_box_m").css("display", "none");
+                            $("#print_result").html("");
+                            bank_multi_left = new generate_matrix('each_idl',$("#x_array_l").val(), $("#y_array_l").val());
+                            bank_multi_right = new generate_matrix('each_idr', $("#x_array_r").val(), $("#y_array_r").val());
+                            multi_div = new generate_matrix('each_id', $("#x_array_r").val(), $("#y_array_r").val());
+                            $(".print_result").css("width", 50*($("#x_array_l").val())+'px').css("height", 50*($("#x_array_l").val())+'px');
+                            $("#print_result").html(multi_div.multi_two(bank_multi_left.array_left_bank(), bank_multi_right.array_right_bank()));
+                            break;
+                        case 'button_reset':
+                            $("#wrong_box_t").css("display", "none");
+                            $("#wrong_box_m").css("display", "none");
+                            $("#print_result").html("");
+                            $("#print_area_l").html("");
+                            $("#print_area_r").html("");
+                            break;
+                        case "back_plus_button":
+                            $("#wrong_box_t").css("display", "none");
+                            break;
+                        case "back_multi_button":
+                            $("#wrong_box_m").css("display", "none");
+                            break;
+                        case "back_zero_button":
+                            $("#wrong_box_z").css("display", "none");
+                            break;
+                        case "back_w_button":
+                            $("#wrong_box_w").css("display", "none");
+                            $("input_design").val("");
+                            break;
+                    };
+                });
+        </script>
+</body>
+</html>
