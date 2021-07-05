@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+        <script src="./JQ/jQuery360.min.js"></script>
+        <title>진수 계산기</title>
+        <link rel="shortcut icon" type="image" href="./icon.png">
+        <style>
+            *{ margin: 0px; padding: 0px; text-align: center; color:#A4193D; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;}
+            html, body{ width: 100%;}
+            /*모바일용 CSS*/
+            @media all and (max-width:767px) and (min-width:320px){
+                select{
+                    cursor: pointer;
+                }
+                header>p{
+                    width: 50%;
+                    height: 5%;
+                    font-size: 25px;
+                    text-align: center;
+                    margin-top: 4%;
+                    margin-left: 25%;
+                    color: #02343F;
+                }
+                .whole_area{
+                    display:flex;
+                    flex-wrap: wrap;
+                    width: 100%;
+                    height: 500px;
+                    background-color: #F0EDCC;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                }
+                    .input_area{
+                        width: 100%;
+                        height: 290px;
+                        display: flex;
+                        flex-flow: row wrap;
+                        text-align: center;
+                        margin-top: 2%;
+                    }
+                    .input_area>input{
+                        width: 72%;
+                        height: 57px;
+                        font-size: 20px;
+                        margin-bottom: 15px;
+                        line-height: 57px;
+                        border: 2px solid #ddd;
+                        border-radius: 4px;
+                    }
+                    .input_area>p{
+                        line-height: 60px;
+                        width: 18%;
+                        height: 57px;
+                        color: #02343F;
+                        vertical-align: text-top;
+                    }
+                    /*.input_area:first-child{
+                        margin-left: 2%;
+                    }*/
+                    .click_area{
+                        width: 18%;
+                        height: 300px;
+                        display: inline-block;
+                        margin-top: 5%;
+                    }
+                .change_value{
+                    width: 18.3%;
+                    height:61px;
+                    margin-left: 0.2%;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                }
+                .result_div{
+                    width: 49.7%;
+                    height: 57px;
+                    font-size: 20px;
+                    background-color: #f0f0f0;
+                    display: inline-block;
+                    line-height: 57px;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                    margin-left: 4%;
+                    margin-right: 1.8%; 
+                    margin-bottom: 15px;
+                }
+                .button_area{
+                    width: 100%;
+                    height: 70px;
+                }
+
+                .button_area>button{
+                    width: 20%;
+                    height: 61px;
+                    font-size: 20px;
+                    background-color:  #f0f0f0;
+                    cursor: pointer;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                }
+                .center_button{
+                    margin-left: 10%;
+                    margin-right: 10%;
+                }
+                .center_line{
+                    width: 100%;
+                    height: 1px;
+                    background-color: #f0f0f0;
+                }
+                .result_area{
+                    width: 100%;
+                    display: flex;
+                    flex-flow: row;
+                }
+                .result_change_value{
+                    width: 16%;
+                    height: 61px;
+                    text-align: center;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                    margin-left: 9%;
+                }
+                
+                .print_area{
+                    width: 61%;
+                    height: 61px;
+                    display: inline-block;
+                    background-color: #f0f0f0;
+                    font-size: 24px;
+                    line-height: 69px;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                    margin-left: 4%;
+                }
+                .alert_box{
+                    cursor: pointer;
+                    display:none;
+                    width: 80%;
+                    height: 100px;
+                    line-height: 50px;
+                    font-size: 20px;
+                    color: tomato;
+                    background-color: #404040;
+                    margin-left: 30%;
+                    border: 2px solid #ddd;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    margin-left:-40%;
+                    margin-top: -40%;
+                }
+                .two_line{
+                    line-height: -10px;
+                }
+                .empty_num_line{
+                    line-height: 100px;
+                }
+            }
+            /*태블릿용 CSS*/
+            @media all and (max-width: 1024px) and (min-width:768px){
+                select{
+                    cursor: pointer;
+                }
+                header>p{
+                    width: 50%;
+                    height: 5%;
+                    font-size: 25px;
+                    text-align: center;
+                    margin-top: 4%;
+                    margin-left: 25%;
+                }
+                .whole_area{
+                    display:flex;
+                    flex-wrap: wrap;
+                    width: 80%;
+                    height: 500px;
+                    background-color: #7b9acc;
+                    border-radius: 10px;
+                    margin-left: 10%;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                }
+                    .input_area{
+                        width: 100%;
+                        height: 290px;
+                        display: flex;
+                        flex-flow: row wrap;
+                        text-align: center;
+                        margin-top: 2%;
+                    }
+                    .input_area>input{
+                        width: 72%;
+                        height: 57px;
+                        font-size: 20px;
+                        margin-bottom: 15px;
+                        line-height: 57px;
+                        border: 2px solid #ddd;
+                        border-radius: 4px;
+                    }
+                    .input_area>p{
+                        line-height: 60px;
+                        width: 18%;
+                        height: 57px;
+                        color: #FCF6F5;
+                        vertical-align: text-top;
+                    }
+                    /*.input_area:first-child{
+                        margin-left: 2%;
+                    }*/
+                    .click_area{
+                        width: 18%;
+                        height: 300px;
+                        display: inline-block;
+                        margin-top: 5%;
+                    }
+                .change_value{
+                    width: 18.3%;
+                    height:61px;
+                    margin-left: 0%;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                    font-size: 20px;
+                    color: #7b9acc;
+                }
+                .result_div{
+                    width: 49.7%;
+                    height: 57px;
+                    font-size: 20px;
+                    background-color: #f0f0f0;
+                    display: inline-block;
+                    line-height: 57px;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                    margin-left: 4%;
+                    margin-right: 1.8%; 
+                    margin-bottom: 15px;
+                    color: #7b9acc;
+                }
+                .button_area{
+                    width: 100%;
+                    height: 70px;
+                }
+
+                .button_area>button{
+                    width: 20%;
+                    height: 61px;
+                    font-size: 30px;
+                    background-color:  #f0f0f0;
+                    cursor: pointer;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                }
+                .center_button{
+                    margin-left: 10%;
+                    margin-right: 10%;
+                }
+                .center_line{
+                    width: 100%;
+                    height: 1px;
+                    background-color: #f0f0f0;
+                }
+                .result_area{
+                    width: 100%;
+                    display: flex;
+                    flex-flow: row;
+                }
+                .result_change_value{
+                    width: 20%;
+                    height: 61px;
+                    text-align: center;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                    margin-left: 9.3%;
+                    font-size: 20px;
+                    color: #7b9acc;
+                }
+                
+                .print_area{
+                    width: 56.7%;
+                    height: 61px;
+                    display: inline-block;
+                    background-color: #f0f0f0;
+                    font-size: 24px;
+                    line-height: 69px;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                    margin-left: 4%;
+                }
+                .alert_box{
+                    cursor: pointer;
+                    display:none;
+                    width: 80%;
+                    height: 100px;
+                    line-height: 50px;
+                    font-size: 20px;
+                    color: tomato;
+                    background-color: #404040;
+                    margin-left: 30%;
+                    border: 2px solid #ddd;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    margin-left:-40%;
+                    margin-top: -40%;
+                }
+                .two_line{
+                    line-height: -10px;
+                }
+                .empty_num_line{
+                    line-height: 100px;
+                }
+            }
+            
+            /*PC용 CSS*/
+            @media all and (min-width:1025px){
+                select{
+                    cursor: pointer;
+                }
+                header>p{
+                    width: 50%;
+                    height: 5%;
+                    font-size: 25px;
+                    text-align: center;
+                    margin-top: 5%;
+                    margin-left: 25%;
+                }
+                .whole_area{
+                    display:flex;
+                    flex-wrap: wrap;
+                    width: 60%;
+                    height: 470px;
+                    background-color: #A4193D; /* #A4193D*/
+                    margin-left: 20%;
+                    border: 2px solid #ddd;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                }
+                    .input_area{
+                        width: 100%;
+                        height: 180px;
+                        display: flex;
+                        flex-flow: row wrap;
+                        text-align: center;
+                        margin-top: 2%;
+                    }
+                    .input_area>input{
+                        width: 38%;
+                        height: 57px;
+                        font-size: 20px;
+                        margin-bottom: 40px;
+                        line-height: 57px;
+                        border: 2px solid #ddd;
+                        border-radius: 4px;
+                        margin-left: 1%;
+                    }
+                    .input_area>p{
+                        display: inline-block;
+                        width: 7%;
+                        height: 57px;
+                        color: #F9EBDE;
+                        line-height: 60px;
+                        margin-left: 1.7%;
+                    }
+                    /*.input_area:first-child{
+                        margin-left: 2%;
+                    }*/
+                    .half_area{
+                        margin-left: 2%;
+                    }
+                    .click_area{
+                        width: 18%;
+                        height: 300px;
+                        display: inline-block;
+                        margin-top: 5%;
+                    }
+                .change_value{
+                    width: 10%;
+                    height:57px;
+                    margin-bottom: 10px;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                    margin-left: 1%;
+                    font-size: 1vw;
+                }
+                .result_div{
+                    width: 26%;
+                    height: 57px;
+                    font-size: 20px;
+                    margin-bottom: 40px;
+                    background-color: #f0f0f0;
+                    display: inline-block;
+                    line-height: 57px;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                    margin-left: 2%;
+                }
+                .button_area{
+                    width: 100%;
+                    height: 70px;
+                    margin-top: 10px;
+                }
+
+                .button_area>button{
+                    width: 13.33%;
+                    height: 61px;
+                    font-size: 30px;
+                    cursor: pointer;
+                    background-color:  #f0f0f0;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                }
+                .center_button{
+                    margin-left: 10%;
+                    margin-right: 10%;
+                }
+                .center_line{
+                    width: 100%;
+                    height: 1px;
+                    background-color: #f0f0f0;
+                }
+                .result_area{
+                    width: 100%;
+                    display: flex;
+                    flex-flow: row;
+                }
+                .result_change_value{
+                    width: 10%;
+                    height: 61px;
+                    font-size: 1vw;
+                    text-align: center;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                    margin-left: 19.5%;
+                }
+                
+                .print_area{
+                    width: 46.6%;
+                    height: 61px;
+                    display: inline-block;
+                    background-color: #f0f0f0;
+                    font-size: 24px;
+                    line-height: 69px;
+                    border: 2px solid #ddd;
+                    border-radius: 4px;
+                    margin-left: 4%;
+                    margin-bottom: 30px;
+                }
+                .alert_box{
+                    cursor: pointer;
+                    display:none;
+                    width: 40%;
+                    height: 100px;
+                    line-height: 50px;
+                    font-size: 27px;
+                    color: tomato;
+                    background-color: #404040;
+                    margin-left: 30%;
+                    border: 2px solid #ddd;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    margin-left:-20%;
+                    margin-top: -10%;
+                }
+                .empty_num_line{
+                    line-height: 100px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <p>진수 계산기</p>
+        </header>
+        <section class="whole_area">
+            <section class="input_area">
+                <p class="input_text">입력</p>
+                <input type="number" id="left_del_num" class="del_num" placeholder="십진수를 입력해주세요">
+                <p class="input_text">입력</p>
+                <input type="number" id="right_del_num" class="del_num" placeholder="십진수를 입력해주세요">
+                <p class="change_text">변환</p>
+                <select name="left_change_value" id="left_change_value" class="change_value" >
+                    <option value="" selected disabled hidden>선택</option>
+                    <option value="l_2">2진수</option>
+                    <option value="l_8">8진수</option>
+                    <option value="l_10">10진수</option>
+                    <option value="l_16">16진수</option>
+                </select>
+                <div id="left_value" class="result_div">결과가 출력됩니다</div>
+                <p class="change_text half_area">변환</p>
+                <select name="right_change_value" id="right_change_value" class="change_value" >
+                    <option value="" selected disabled hidden>선택</option>
+                        <option value="r_2">2진수</option>
+                        <option value="r_8">8진수</option>
+                        <option value="r_10">10진수</option>
+                        <option value="r_16">16진수</option>
+                </select>
+                <div id="right_value" class="result_div">결과가 출력됩니다</div>
+            </section>
+            <div class="center_line"></div>
+            <section id="button_area" class="button_area">
+                <button id="plus_button">+</button>
+                <button id="minus_button" class="center_button">-</button>
+                <button id="multi_button">x</button>
+            </section>
+            <div class="result_area">
+                <select name="result_change_value" id="result_change_value" class="result_change_value">
+                    <option value="b_2">2진수</option>
+                    <option value="b_8">8진수</option>
+                    <option value="b_10" selected>10진수</option>
+                    <option value="b_16">16진수</option>
+                </select>
+                <div id="print_area" class="print_area"></div>    
+            </div>
+        </section>
+        <div id="alert_box" class="alert_box two_line" onclick="">첫번째 수가 두번째<br>수보다 커야 합니다.</div>
+        <div id="del_box" class="alert_box">0~9 사이의<br>숫자를 입력해주세요</div>
+        <div id="empty_num" class="alert_box empty_num_line">값을 모두 입력해주세요</div>
+        <script>
+            class Change_number{
+                constructor(num_value,right_val,number_kind) {
+                    this.number_kind = number_kind;
+                    this.num_value = num_value;
+                    this.right_val = right_val;
+                    this.hex_matrix = {"1": 1, "2":2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9,"a":10,"b":11,"c":12,"d":13,"e":14,"f":15};
+                    this.ten_plus = this.plus();
+                }
+                left_bank(some_num){
+                    let empty_num=0;
+                    empty_num=some_num;
+                    console.log(empty_num);
+                    return empty_num;
+                }
+                right_bank(some_num){
+                    let empty_num=0;
+                    empty_num=some_num;
+                    console.log(empty_num);
+                    return empty_num;
+                }
+                change_from_two_to_ten(){
+                    let i = (this.num_value).length-1;
+                    let question_number = 0;
+                    let j=0;
+                    while(i>=0) {
+                        question_number+= parseInt(this.num_value[j])*(this.number_kind**(parseInt(i)));
+                        console.log(i);
+                        console.log(this.num_value[j]);
+                        console.log(question_number);
+                        console.log(this.number_kind);
+                        i--;
+                        j++;
+                    }
+                    return question_number;
+                    console.log(question_number);
+                }
+                /*change_from_sixteen_to_ten(arg1){
+                    let arg1 = Number(arg1);
+                    //let con_d = 2;
+                    let total_sixteen = 0;
+                    let i=0;
+                    while(i<arg1.length){
+                        total_sixteen += this.hex_matrix[arg1[arg1.length-1-i]] * Math.pow(16, i);
+                        console.log(arg1);
+                        console.log(total_sixteen);
+                        i++
+                    }
+                    return total_sixteen;
+                }*/
+                change_from_ten_to_two(arg1){
+                            let empty_array = [];
+                            let empty_string="";
+                            let  i = 0;
+                            while(i < 1){
+                                if(arg1 < this.number_kind){
+                                    console.log(arg1);
+                                    i++;
+                                }
+                                empty_array.unshift(parseInt(arg1%this.number_kind));
+                                console.log(arg1);
+                                console.log(empty_array);
+                                arg1 = parseInt(arg1/this.number_kind);
+                                console.log(arg1);
+                            };
+                            i=0;
+                            while(i<empty_array.length){
+                                empty_string+=empty_array[i];
+                                i++;
+                            }
+                            console.log(empty_string);
+                            return empty_string;
+                }
+                change_from_ten_to_sixteen(arg1){
+                    let hex_matrix = [ 0, 1,2,3,4,5,6,7,8,9,"A","B","C","D","E","F" ];
+                    let hex_a = [];
+                    arg1=Number(arg1);
+                    console.log(arg1);
+                    function dec_tohex( arg2 ){
+                        hex_a.unshift( hex_matrix[(arg2%16)] );
+                        console.log(hex_a);
+                        if(arg2<16){ 
+                            return 0 
+                        } else {    
+                            arg2 = Math.floor(arg2/16); 
+                        }
+                            dec_tohex(arg2); 
+                        }
+                        dec_tohex(arg1);
+                        console.log(arg1);
+                        return hex_a;
+                }
+                plus(arg1, arg2){
+                    return arg1+arg2
+                    console.log(arg1);
+                    console.log(arg2);
+                }
+                plus_btn(){
+                    $("#print_area").html(Number(this.num_value)+Number(this.right_val));
+                }
+                minus_btn(){
+                    $("#print_area").html(Number(this.num_value)-Number(this.right_val));
+                }
+                multi_btn(){
+                    $("#print_area").html(Number(this.num_value)*Number(this.right_val));
+                }
+            }
+            bank_left = () =>{
+                //let i=0;
+                //let empty_string=0;
+                let empty_string=$("#left_value").val();
+                //empty_string=arg;
+                //console.log(arg);
+                console.log(empty_string);
+                return empty_string;
+            };
+            let del_check = /\D+/;
+            $("#left_del_num").on("keyup", function(){
+                del_check.test($("#left_del_num").val()) && $("#del_box").css("display" ,"block")&&($("#left_del_num").val(""));
+            })
+            $("#right_del_num").on("keyup", function(){
+                del_check.test($("#right_del_num").val()) && $("#del_box").css("display" ,"block")&&($("#right_del_num").val(""));
+            })
+            $(document).on("keydown", function(e){
+                event.keyCode == 27 && $("#del_box").css("display" ,"none") && $("#alert_box").css("display" ,"none") && $("#empty_num").css("display" ,"none");
+            })
+            $(window).on("change", function(e){
+                    $(".alert_box").css("display" ,"none");
+                switch(e.target.value){
+                    case "l_2":
+                    let from_left_two = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 2);
+                    $("#left_value").html(from_left_two.change_from_ten_to_two($("#left_del_num").val()));
+                    break;
+                    case "l_8":
+                    let from_left_eight = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 8);
+                    $("#left_value").html(from_left_eight.change_from_ten_to_two($("#left_del_num").val()));
+                    break;
+                    case "l_10":
+                    $("#left_value").html(Number($("#left_del_num").val()));
+                    break;
+                    case "l_16":
+                    let from_left_sixtenn = new Change_number( $("#left_del_num").val(),$("#right_del_num").val(), 16);
+                    $("#left_value").html(from_left_sixtenn.change_from_ten_to_sixteen($("#left_del_num").val()));
+                    break;
+                    case "r_2":
+                    let from_right_two = new Change_number( $("#left_del_num").val(),$("#right_del_num").val(), 2);
+                    $("#right_value").html(from_right_two.change_from_ten_to_two($("#right_del_num").val()));
+                    break;
+                    case "r_8":
+                    let from_right_eight = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 8);
+                    $("#right_value").html(from_right_eight.change_from_ten_to_two($("#right_del_num").val()));
+                    break;
+                    case "r_10":
+                    $("#right_value").html(Number($("#right_del_num").val()));
+                    break;
+                    case "r_16":
+                    let from_right_sixtenn = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 16);
+                    $("#right_value").html(from_right_sixtenn.change_from_ten_to_sixteen($("#right_del_num").val()));
+                    break;
+                    case "b_2":
+                    let bottom_two = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 2);
+                    $("#print_area").html(bottom_two.change_from_ten_to_two(Number($("#left_del_num").val())+Number($("#right_del_num").val())));
+                    break;
+                    case "b_8":
+                    let bottom_eight = new Change_number($("#left_value").val(),$("#right_value").val(), 8);
+                    $("#print_area").html(bottom_eight.change_from_ten_to_two(Number($("#left_del_num").val())+Number($("#right_del_num").val())));
+                    break;
+                    case "b_10":
+                    $("#print_area").html(Number($("#left_del_num").val())+Number($("#right_del_num").val()));
+                    break;
+                    case "b_16":
+                    let bottom_sixteen = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 16);
+                    $("#print_area").html(bottom_sixteen.change_from_ten_to_sixteen(Number($("#left_del_num").val())+Number($("#right_del_num").val())));
+                    break;
+                    
+                    }
+            });
+            $(window).on("click", function(e) {
+                $("#alert_box").css("display" ,"none");
+                switch(e.target.id){
+                    case "plus_button":
+                    if($("#left_del_num").val() == "" || $("#right_del_num").val() ==""){
+                        $("#empty_num").css("display", "block");
+                    }else{
+                        if($("#result_change_value").val() == "b_10"){
+                            $("#print_area").html("");
+                            let ten_plus = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 10);
+                            ten_plus.plus_btn();
+                        } else if($("#result_change_value").val() == "b_2"){
+                            let two_plus = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 2);
+                            $("#print_area").html(two_plus.change_from_ten_to_two(Number($("#left_del_num").val())+Number($("#right_del_num").val())));
+                        } else if($("#result_change_value").val() == "b_8"){
+                            let eight_plus = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 8);
+                            $("#print_area").html(eight_plus.change_from_ten_to_two(Number($("#left_del_num").val())+Number($("#right_del_num").val())));
+                        } else if($("#result_change_value").val() == "b_16"){
+                            let sixteen_plus = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 16);
+                            $("#print_area").html(sixteen_plus.change_from_ten_to_sixteen(Number($("#left_del_num").val())+Number($("#right_del_num").val())));
+                        } else {
+                            return 0;
+                        }
+                    }
+                    break;
+                    case "minus_button":
+                        $("#alert_box").css("display" ,"none");
+                        if($("#left_del_num").val() == "" || $("#right_del_num").val() ==""){
+                            $("#empty_num").css("display", "block");
+                        }else{
+                            console.log($("#left_del_num").val());
+                            console.log($("#right_del_num").val());
+                            if(Number($("#left_del_num").val())>=Number($("#right_del_num").val())) {
+                                
+                                if($("#result_change_value").val() == "b_10"){
+                                    $("#print_area").html("");
+                                    let ten_minus = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 10);
+                                    ten_minus.minus_btn();
+                                } else if($("#result_change_value").val() == "b_2"){
+                                    let two_minus = new Change_number( $("#left_del_num").val(),$("#right_del_num").val(), 2);
+                                    $("#print_area").html(two_minus.change_from_ten_to_two(Number($("#left_del_num").val())-Number($("#right_del_num").val())));
+                                } else if($("#result_change_value").val() == "b_8"){
+                                    let eight_minus = new Change_number( $("#left_del_num").val(),$("#right_del_num").val(), 8);
+                                    $("#print_area").html(eight_minus.change_from_ten_to_two(Number($("#left_del_num").val())-Number($("#right_del_num").val())));
+                                } else if($("#result_change_value").val() == "b_16"){
+                                    let sixteen_minus = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 16);
+                                    $("#print_area").html(sixteen_minus.change_from_ten_to_sixteen(Number($("#left_del_num").val())-Number($("#right_del_num").val())));
+                                } else {
+                                    return 0;
+                                }
+                            } else { 
+                                $("#alert_box").css("display" ,"block");
+                        }
+                        
+                        console.log($("#left_del_num").val());
+                        console.log($("#right_del_num").val());
+                    };
+                    break;
+                    case "multi_button":
+                    $(".alert_box").css("display" ,"none");
+                    if($("#left_del_num").val() == "" || $("#right_del_num").val() ==""){
+                        $("#empty_num").css("display", "block");
+                    }else{
+                        if($("#result_change_value").val() == "b_10"){
+                            $("#print_area").html("");
+                            let ten_multi = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 10);
+                            ten_multi.multi_btn();
+                        } else if($("#result_change_value").val() == "b_2"){
+                            let two_multi = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 2);
+                            $("#print_area").html(two_multi.change_from_ten_to_two(Number($("#left_del_num").val())*Number($("#right_del_num").val())));
+                        } else if($("#result_change_value").val() == "b_8"){
+                            let eight_multi = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 8);
+                            $("#print_area").html(eight_multi.change_from_ten_to_two(Number($("#left_del_num").val())*Number($("#right_del_num").val())));
+                        } else if($("#result_change_value").val() == "b_16"){
+                            let sixteen_multi = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 16);
+                            $("#print_area").html(sixteen_multi.change_from_ten_to_sixteen(Number($("#left_del_num").val())*Number($("#right_del_num").val())));
+                        } else {
+                            return 0;
+                        }
+                    }
+                    break;
+                    case "alert_box":
+                    $(".alert_box").css("display" ,"none");
+                    break;
+                    case "del_box":
+                    $(".alert_box").css("display" ,"none");
+                    break;
+                    case "empty_num":
+                    $(".alert_box").css("display" ,"none");
+                }
+            })
+        </script>
+    </body>
+</html>

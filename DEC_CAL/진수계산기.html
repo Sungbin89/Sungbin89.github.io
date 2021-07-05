@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+        <script src="./JQ/jQuery360.min.js"></script>
+        <title>진수 계산기</title>
+        <link rel="shortcut icon" type="image" href="./icon.png">
+        <style>
+            *{ margin: 0px; padding: 0px; text-align: center; color:#A4193D; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;}
+            html, body{ width: 100%;}
+            /*모바일용 CSS*/
+            @media all and (max-width:767px) and (min-width:320px){
+                select{
+                    cursor: pointer;
+                }
+                header>p{   /*타이틀*/
+                    width: 50%;
+                    height: 5%;
+                    color: #02343F;
+                    font-size: 25px;
+                    text-align: center;
+                    margin-top: 4%;
+                    margin-left: 25%;
+                }
+                .whole_area{ /*표시할 상자의 크기*/
+                    display:flex;
+                    flex-wrap: wrap;
+                    width: 100%;
+                    height: 500px;
+                    background-color: #F0EDCC;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                }
+                    .input_area{ /*밑줄 전까지의 css박스*/
+                        display: flex;
+                        flex-flow: row wrap;
+                        width: 100%;
+                        height: 290px;
+                        text-align: center;
+                        margin-top: 2%;
+                    }
+                        .input_area>input{  /*십진수 입력 하는 곳*/
+                            width: 72%;
+                            height: 57px;
+                            background-color: #f0f0f0;
+                            font-size: 20px;
+                            line-height: 57px;                            
+                            border: 2px solid #ddd;
+                            border-radius: 4px;
+                            margin-bottom: 15px;
+                        }
+                        .input_area>p{  /*입력 글자*/
+                            line-height: 60px;
+                            width: 18%;
+                            height: 57px;
+                            color: #02343F;
+                            vertical-align: text-top;
+                        }
+                        .change_value{  /*진수 변환 select*/
+                            width: 18.3%;
+                            height:61px;
+                            background-color: #f0f0f0;
+                            border: 2px solid #ddd;
+                            border-radius: 4px;
+                            margin-left: 0.2%;
+                        }
+                        .result_div{    /*진수 변환 출력*/
+                            display: inline-block;
+                            width: 49.7%;
+                            height: 57px;
+                            background-color: #f0f0f0;
+                            font-size: 20px;
+                            line-height: 57px;
+                            border: 2px solid #ddd;
+                            border-radius: 4px;
+                            margin-left: 4%;
+                            margin-right: 1.8%; 
+                            margin-bottom: 15px;
+                        }
+                .center_line{   /*가운데 표시선*/
+                    width: 100%;
+                    height: 1px;
+                    background-color: #f0f0f0;
+                }
+                .button_area{   /*+-x 버튼 위치*/
+                    width: 100%;
+                    height: 70px;
+                }
+                    .button_area>button{ /*버튼*/
+                        width: 20%;
+                        height: 61px;
+                        background-color:  #f0f0f0;
+                        font-size: 20px;
+                        cursor: pointer;
+                        border: 2px solid #ddd;
+                        border-radius: 4px;
+                    }
+                    .center_button{ /*가운데 버튼 공간 만들기*/
+                        margin-left: 10%;
+                        margin-right: 10%;
+                    }
+                .result_area{   /*마지막 결과 출력 위치*/
+                    display: flex;
+                    flex-flow: row;
+                    width: 100%;
+                }
+                    .result_change_value{   /*연산 결과 값의 진수변환*/
+                        width: 16%;
+                        height: 61px;
+                        background-color: #f0f0f0;
+                        text-align: center;
+                        border: 2px solid #ddd;
+                        border-radius: 4px;
+                        margin-left: 9%;
+                    }
+                    .print_area{    /*연산된 결과값 출력*/
+                        display: inline-block;
+                        width: 61%;
+                        height: 57px;
+                        background-color: #f0f0f0;
+                        font-size: 24px;
+                        line-height: 69px;
+                        border: 2px solid #ddd;
+                        border-radius: 4px;
+                        margin-left: 4%;
+                    }
+                .alert_box{ /*경고 문구*/
+                    display:none;
+                    width: 80%;
+                    height: 100px;
+                    color: tomato;
+                    background-color: #404040;
+                    font-size: 20px;
+                    line-height: 50px;
+                    cursor: pointer;                    
+                    border: 2px solid #ddd;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    margin-left:-40%;
+                    margin-top: -40%;
+                }
+                .two_line{  /*두줄로 생기는 결과 박스의 글자 위치 조정*/
+                    line-height: -10px;
+                }
+                .empty_num_line{    /*단일 글자의 글자 위치 조정*/
+                    line-height: 100px;
+                }
+            }
+            /*태블릿용 CSS*/
+            @media all and (max-width: 1024px) and (min-width:768px){
+                select{
+                    cursor: pointer;
+                }
+                header>p{   /*타이틀*/
+                    width: 50%;
+                    height: 5%;
+                    font-size: 25px;
+                    text-align: center;
+                    margin-top: 4%;
+                    margin-left: 25%;
+                }
+                .whole_area{ /*표시할 상자의 크기*/
+                    display:flex;
+                    flex-wrap: wrap;
+                    width: 80%;
+                    height: 500px;
+                    background-color: #7b9acc;
+                    border-radius: 10px;
+                    margin-left: 10%;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                }
+                    .input_area{ /*밑줄 전까지의 css박스*/
+                        display: flex;
+                        flex-flow: row wrap;
+                        width: 100%;
+                        height: 290px;
+                        text-align: center;
+                        margin-top: 2%;
+                    }
+                        .input_area>input{  /*십진수 입력 하는 곳*/
+                            width: 72%;
+                            height: 57px;
+                            background-color: #f0f0f0;
+                            font-size: 20px;
+                            line-height: 57px;
+                            border: 2px solid #ddd;
+                            border-radius: 4px;
+                            margin-bottom: 15px;
+                        }
+                        .input_area>p{  /*입력 글자*/
+                            width: 18%;
+                            height: 57px;
+                            color: #FCF6F5;
+                            line-height: 60px;
+                        }
+                        .change_value{  /*진수 변환 select*/
+                            width: 18.3%;
+                            height:61px;
+                            background-color: #f0f0f0;
+                            color: #7b9acc;
+                            font-size: 20px;
+                            border: 2px solid #ddd;
+                            border-radius: 4px;
+                            margin-left: 0%;
+                        }
+                        .result_div{    /*진수 변환 출력*/
+                            display: inline-block;
+                            width: 49.7%;
+                            height: 57px;
+                            background-color: #f0f0f0;
+                            color: #7b9acc;
+                            font-size: 20px;
+                            line-height: 57px;
+                            border: 2px solid #ddd;
+                            border-radius: 4px;
+                            margin-left: 4%;
+                            margin-right: 1.8%; 
+                            margin-bottom: 15px;
+                        }
+                .center_line{   /*가운데 표시선*/
+                    width: 100%;
+                    height: 1px;
+                    background-color: #f0f0f0;
+                }                        
+                .button_area{   /*+-x 버튼 위치*/
+                    width: 100%;
+                    height: 70px;
+                }
+                    .button_area>button{    /*버튼*/
+                        width: 20%;
+                        height: 61px;
+                        font-size: 30px;
+                        background-color:  #f0f0f0;
+                        cursor: pointer;
+                        border: 2px solid #ddd;
+                        border-radius: 4px;
+                    }
+                    .center_button{ /*가운데 버튼 공간 만들기*/
+                        margin-left: 10%;
+                        margin-right: 10%;
+                    }
+                .result_area{   /*마지막 결과 출력 위치*/
+                    display: flex;
+                    flex-flow: row;
+                    width: 100%;
+                }
+                    .result_change_value{   /*연산 결과 값의 진수변환*/
+                        width: 20%;
+                        height: 61px;
+                        background-color: #f0f0f0;
+                        color: #7b9acc;
+                        font-size: 20px;
+                        text-align: center;
+                        border: 2px solid #ddd;
+                        border-radius: 4px;
+                        margin-left: 9.3%;
+                    }
+                    .print_area{     /*연산된 결과값 출력*/
+                        display: inline-block;
+                        width: 56.7%;
+                        height: 57px;
+                        background-color: #f0f0f0;
+                        font-size: 24px;
+                        line-height: 69px;
+                        border: 2px solid #ddd;
+                        border-radius: 4px;
+                        margin-left: 4%;
+                    }
+                .alert_box{ /*경고 문구*/
+                    display:none;
+                    width: 80%;
+                    height: 100px;
+                    cursor: pointer;
+                    background-color: #404040;
+                    color: tomato;
+                    font-size: 20px;
+                    line-height: 50px;
+                    border: 2px solid #ddd;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    margin-left:-40%;
+                    margin-top: -40%;
+                }
+                .two_line{  /*두줄로 생기는 결과 박스의 글자 위치 조정*/
+                    line-height: -10px;
+                }
+                .empty_num_line{    /*단일 글자의 글자 위치 조정*/
+                    line-height: 100px;
+                }
+            }
+            
+            /*PC용 CSS*/
+            @media all and (min-width:1025px){
+                select{
+                    cursor: pointer;
+                }
+                header>p{   /*타이틀*/
+                    width: 50%;
+                    height: 5%;
+                    font-size: 25px;
+                    text-align: center;
+                    margin-top: 5%;
+                    margin-left: 25%;
+                }
+                .whole_area{ /*표시할 상자의 크기*/
+                    display:flex;
+                    flex-wrap: wrap;
+                    width: 60%;
+                    height: 470px;
+                    background-color: #A4193D; /* #A4193D*/
+                    margin-left: 20%;
+                    border: 2px solid #ddd;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                }
+                    .input_area{ /*밑줄 전까지의 css박스*/
+                        display: flex;
+                        flex-flow: row wrap;
+                        width: 100%;
+                        height: 180px;
+                        text-align: center;
+                        margin-top: 2%;
+                    }
+                        .input_area>input{  /*십진수 입력 하는 곳*/
+                            width: 38%;
+                            height: 57px;
+                            background-color: #f0f0f0;
+                            font-size: 20px;
+                            line-height: 57px;
+                            border: 2px solid #ddd;
+                            border-radius: 4px;
+                            margin-left: 1%;
+                            margin-bottom: 40px;
+                        }
+                        .input_area>p{  /*입력 글자*/
+                            display: inline-block;
+                            width: 7%;
+                            height: 57px;
+                            color: #F9EBDE;
+                            line-height: 60px;
+                            margin-left: 1.7%;
+                        }
+                        .change_value{  /*진수 변환 select*/
+                            width: 10%;
+                            height:61px;
+                            background-color: #f0f0f0;
+                            font-size: 1vw;
+                            border: 2px solid #ddd;
+                            border-radius: 4px;
+                            margin-left: 1%;
+                            margin-bottom: 10px;
+                        }
+                        .result_div{    /*진수 변환 출력*/
+                            display: inline-block;
+                            width: 26%;
+                            height: 57px;
+                            background-color: #f0f0f0;
+                            font-size: 20px;
+                            line-height: 57px;
+                            border: 2px solid #ddd;
+                            border-radius: 4px;
+                            margin-left: 2%;
+                            margin-bottom: 40px;
+                        }
+                        .half_area{
+                            margin-left: 2%;
+                        }
+                    .center_line{   /*가운데 표시선*/
+                        width: 100%;
+                        height: 1px;
+                        background-color: #f0f0f0;
+                    }
+                    .button_area{   /*+-x 버튼 위치*/
+                        width: 100%;
+                        height: 70px;
+                        margin-top: 10px;
+                    }
+                        .button_area>button{    /*버튼*/
+                            width: 13.33%;
+                            height: 61px;
+                            font-size: 30px;
+                            background-color:  #f0f0f0;
+                            cursor: pointer;
+                            border: 2px solid #ddd;
+                            border-radius: 4px;
+                        }
+                        .center_button{ /*가운데 버튼 공간 만들기*/
+                            margin-left: 10%;
+                            margin-right: 10%;
+                        }
+                    .result_area{   /*마지막 결과 출력 위치*/
+                        display: flex;
+                        flex-flow: row;
+                        width: 100%;
+                    }
+                        .result_change_value{   /*연산 결과 값의 진수변환*/
+                            width: 10%;
+                            height: 61px;
+                            background-color: #f0f0f0;
+                            font-size: 1vw;
+                            text-align: center;
+                            border: 2px solid #ddd;
+                            border-radius: 4px;
+                            margin-left: 19.5%;
+                        }
+                        
+                        .print_area{     /*연산된 결과값 출력*/
+                            display: inline-block;
+                            width: 46.6%;
+                            height: 57px;
+                            background-color: #f0f0f0;
+                            font-size: 24px;
+                            line-height: 69px;
+                            border: 2px solid #ddd;
+                            border-radius: 4px;
+                            margin-left: 4%;
+                            margin-bottom: 30px;
+                        }
+                .alert_box{ /*경고 문구*/
+                    display:none;
+                    cursor: pointer;
+                    width: 40%;
+                    height: 100px;
+                    background-color: #404040;
+                    color: tomato;
+                    line-height: 50px;
+                    font-size: 27px;
+                    border: 2px solid #ddd;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    margin-left:-20%;
+                    margin-top: -10%;
+                }
+                .empty_num_line{    /*단일 글자의 글자 위치 조정*/
+                    line-height: 100px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <p>진수 계산기</p>
+        </header>
+        <section class="whole_area">
+            <section class="input_area">
+                <p>입력</p>
+                <input type="number" id="left_del_num" class="del_num" placeholder="십진수를 입력해주세요"> <!--왼쪽 값 받기-->
+                <p>입력</p>
+                <input type="number" id="right_del_num" class="del_num" placeholder="십진수를 입력해주세요"> <!--오른쪽 값 받기-->
+                <p class="change_text">변환</p>
+                <select name="left_change_value" id="left_change_value" class="change_value" > <!--원하는 진수로 변환-->
+                    <option value="" selected disabled hidden>선택</option> <!--숨겨진 기본값 설정-->
+                    <option value="l_2">2진수</option>
+                    <option value="l_8">8진수</option>
+                    <option value="l_10">10진수</option>
+                    <option value="l_16">16진수</option>
+                </select>
+                <div id="left_value" class="result_div">결과가 출력됩니다</div> <!--왼쪽 진수 변환 후 출력하는 곳-->
+                <p class="change_text half_area">변환</p>
+                <select name="right_change_value" id="right_change_value" class="change_value" > <!--원하는 진수로 변환-->
+                    <option value="" selected disabled hidden>선택</option> <!--숨겨진 기본값 설정-->
+                        <option value="r_2">2진수</option>
+                        <option value="r_8">8진수</option>
+                        <option value="r_10">10진수</option>
+                        <option value="r_16">16진수</option>
+                </select>
+                <div id="right_value" class="result_div">결과가 출력됩니다</div> <!--오른쪽 진수 변환 후 출력하는 곳-->
+            </section>
+            <div class="center_line"></div>
+            <section id="button_area" class="button_area">  <!-- + - x 버튼 구역-->
+                <button id="plus_button">+</button>
+                <button id="minus_button" class="center_button">-</button>
+                <button id="multi_button">x</button>
+            </section>
+            <div class="result_area">
+                <select name="result_change_value" id="result_change_value" class="result_change_value">    <!--연산된 결과값 진수 변환-->
+                    <option value="b_2">2진수</option>
+                    <option value="b_8">8진수</option>
+                    <option value="b_10" selected>10진수</option>
+                    <option value="b_16">16진수</option>
+                </select>
+                <div id="print_area" class="print_area"></div>  <!--결과 출력-->
+            </div>
+        </section>
+        <div id="alert_box" class="alert_box two_line" onclick="">첫번째 수가 두번째<br>수보다 커야 합니다.</div>
+        <div id="del_box" class="alert_box">0~9 사이의<br>숫자를 입력해주세요</div>
+        <div id="empty_num" class="alert_box empty_num_line">값을 모두 입력해주세요</div>
+        <script>
+            class Change_number{
+                constructor(left_val,right_val,number_kind) {  //객체 생성, 왼쪽 input 값, 오른쪽 input 값, 진수의 종류를 받아옴
+                    this.left_val = left_val;
+                    this.right_val = right_val;
+                    this.number_kind = number_kind;
+                }
+                change_from_ten_to_two(arg1){   //10=>2진수 변환
+                            let empty_array = [];
+                            let empty_string="";
+                            let  i = 0;
+                            while(i < 1){
+                                if(arg1 < this.number_kind){
+                                    i++;
+                                }
+                                empty_array.unshift(parseInt(arg1%this.number_kind));
+                                arg1 = parseInt(arg1/this.number_kind);
+                            };
+                            i=0;
+                            while(i<empty_array.length){    //생성된 값을 반복문으로 문자열에 삽입
+                                empty_string+=empty_array[i];
+                                i++;
+                            }
+                            return empty_string;
+                }
+                change_from_ten_to_sixteen(arg1){   //10=>16진수로 변환
+                    let hex_matrix = [ 0, 1,2,3,4,5,6,7,8,9,"A","B","C","D","E","F" ];  //10부터 대체되는 알파벳 배열 생성
+                    let hex_a = [];
+                    arg1=Number(arg1);
+                    function dec_tohex( arg2 ){
+                        hex_a.unshift( hex_matrix[(arg2%16)] ); //1배열의 인덱스 값을 잢고 거꾸로 삽입
+                        if(arg2<16){ 
+                            return 0 
+                        } else {    
+                            arg2 = Math.floor(arg2/16); 
+                        }
+                            dec_tohex(arg2); 
+                        }
+                        dec_tohex(arg1);
+                        return hex_a;
+                }
+                plus_btn(){
+                    $("#print_area").html(Number(this.left_val)+Number(this.right_val));    //10진수 더하기
+                }
+                minus_btn(){
+                    $("#print_area").html(Number(this.left_val)-Number(this.right_val));    //10진수 빼기
+                }
+                multi_btn(){
+                    $("#print_area").html(Number(this.left_val)*Number(this.right_val));    //10진수 곱하기
+                }
+            }
+            let del_check = /\D+/;  //입력받을 10진수를 정규식을 통해 규정
+            $("#left_del_num").on("keyup", function(){  //keyup과 정규식으로 에러문구를 띄움
+                del_check.test($("#left_del_num").val()) && $("#del_box").css("display" ,"block")&&($("#left_del_num").val(""));
+            })
+            $("#right_del_num").on("keyup", function(){
+                del_check.test($("#right_del_num").val()) && $("#del_box").css("display" ,"block")&&($("#right_del_num").val(""));
+            })
+            $(document).on("keydown", function(e){  //esc버튼으로 경고문구를 지울 수 있도록 함
+                event.keyCode == 27 && $("#del_box").css("display" ,"none") && $("#alert_box").css("display" ,"none") && $("#empty_num").css("display" ,"none");
+            })
+            $(window).on("change", function(e){
+                $(".alert_box").css("display" ,"none");
+                switch(e.target.value){
+                    case "l_2": //왼쪽 입력된 값의 2진수 변환
+                        let from_left_two = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 2);
+                        $("#left_value").html(from_left_two.change_from_ten_to_two($("#left_del_num").val()));
+                    break;
+                    case "l_8": //왼쪽 입력된 값의 8진수 변환
+                        let from_left_eight = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 8);
+                        $("#left_value").html(from_left_eight.change_from_ten_to_two($("#left_del_num").val()));
+                    break;
+                    case "l_10": //왼쪽 입력된 값의 10진수 변환
+                        $("#left_value").html(Number($("#left_del_num").val()));
+                    break;
+                    case "l_16": //왼쪽 입력된 값의 16진수 변환
+                        let from_left_sixtenn = new Change_number( $("#left_del_num").val(),$("#right_del_num").val(), 16);
+                        $("#left_value").html(from_left_sixtenn.change_from_ten_to_sixteen($("#left_del_num").val()));
+                    break;
+                    case "r_2": //오른쪽 입력된 값의 2진수 변환
+                        let from_right_two = new Change_number( $("#left_del_num").val(),$("#right_del_num").val(), 2);
+                        $("#right_value").html(from_right_two.change_from_ten_to_two($("#right_del_num").val()));
+                    break;
+                    case "r_8": //오른쪽 입력된 값의 8진수 변환
+                        let from_right_eight = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 8);
+                        $("#right_value").html(from_right_eight.change_from_ten_to_two($("#right_del_num").val()));
+                    break;
+                    case "r_10": //오른쪽 입력된 값의 10진수 변환
+                        $("#right_value").html(Number($("#right_del_num").val()));
+                    break;
+                    case "r_16": //오른쪽 입력된 값의 16진수 변환
+                        let from_right_sixtenn = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 16);
+                        $("#right_value").html(from_right_sixtenn.change_from_ten_to_sixteen($("#right_del_num").val()));
+                    break;
+                    case "b_2": //연산된 값의 2진수 변환
+                        let bottom_two = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 2);
+                    break;
+                    case "b_8": //연산된 값의 8진수 변환
+                        let bottom_eight = new Change_number($("#left_value").val(),$("#right_value").val(), 8);
+                    break;
+                    case "b_16": //연산된 값의 16진수 변환
+                        let bottom_sixteen = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 16);
+                    break;
+                    }
+            });
+            $(window).on("click", function(e) {
+                $("#alert_box").css("display" ,"none"); //버튼을 누를시 모든 경고문구 해제
+                switch(e.target.id){
+                    case "plus_button": //더하기 연산자 버튼
+                        if($("#left_del_num").val() == "" || $("#right_del_num").val() ==""){
+                            $("#empty_num").css("display", "block");    //왼쪽 혹은 오른쪽에 값이 없을때 경고문구 표시
+                        }else{
+                            if($("#result_change_value").val() == "b_10"){ // 더하기 버튼 + 10진수 일시
+                                $("#print_area").html("");
+                                let ten_plus = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 10);
+                                ten_plus.plus_btn();
+                            } else if($("#result_change_value").val() == "b_2"){ // 더하기 버튼 + 2진수 일시
+                                let two_plus = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 2);
+                                $("#print_area").html(two_plus.change_from_ten_to_two(Number($("#left_del_num").val())+Number($("#right_del_num").val())));
+                            } else if($("#result_change_value").val() == "b_8"){ // 더하기 버튼 + 8진수 일시
+                                let eight_plus = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 8);
+                                $("#print_area").html(eight_plus.change_from_ten_to_two(Number($("#left_del_num").val())+Number($("#right_del_num").val())));
+                            } else if($("#result_change_value").val() == "b_16"){ // 더하기 버튼 + 16진수 일시
+                                let sixteen_plus = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 16);
+                                $("#print_area").html(sixteen_plus.change_from_ten_to_sixteen(Number($("#left_del_num").val())+Number($("#right_del_num").val())));
+                            } else {
+                                return 0;
+                            }
+                        }
+                    break;
+                    case "minus_button":
+                        $("#alert_box").css("display" ,"none"); //버튼을 누를시 모든 경고문구 해제
+                        if($("#left_del_num").val() == "" || $("#right_del_num").val() ==""){
+                            $("#empty_num").css("display", "block"); //왼쪽 혹은 오른쪽에 값이 없을때 경고문구 표시
+                        }else{
+                            if(Number($("#left_del_num").val())>=Number($("#right_del_num").val())) {
+                                if($("#result_change_value").val() == "b_10"){ // 빼기 버튼 + 10진수 일시
+                                    $("#print_area").html("");
+                                    let ten_minus = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 10);
+                                    ten_minus.minus_btn();
+                                } else if($("#result_change_value").val() == "b_2"){ // 빼기 버튼 + 2진수 일시
+                                    let two_minus = new Change_number( $("#left_del_num").val(),$("#right_del_num").val(), 2);
+                                    $("#print_area").html(two_minus.change_from_ten_to_two(Number($("#left_del_num").val())-Number($("#right_del_num").val())));
+                                } else if($("#result_change_value").val() == "b_8"){ // 빼기 버튼 + 8진수 일시
+                                    let eight_minus = new Change_number( $("#left_del_num").val(),$("#right_del_num").val(), 8);
+                                    $("#print_area").html(eight_minus.change_from_ten_to_two(Number($("#left_del_num").val())-Number($("#right_del_num").val())));
+                                } else if($("#result_change_value").val() == "b_16"){ // 빼기 버튼 + 16진수 일시
+                                    let sixteen_minus = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 16);
+                                    $("#print_area").html(sixteen_minus.change_from_ten_to_sixteen(Number($("#left_del_num").val())-Number($("#right_del_num").val())));
+                                } else {
+                                    return 0;
+                                }
+                            } else { 
+                                $("#alert_box").css("display" ,"block");
+                            }
+                        };
+                    break;
+                    case "multi_button":
+                        $(".alert_box").css("display" ,"none"); //버튼을 누를시 모든 경고문구 해제
+                        if($("#left_del_num").val() == "" || $("#right_del_num").val() ==""){
+                            $("#empty_num").css("display", "block"); //왼쪽 혹은 오른쪽에 값이 없을때 경고문구 표시
+                        }else{
+                            if($("#result_change_value").val() == "b_10"){ // 곱하기 버튼 + 10진수 일시
+                                $("#print_area").html("");
+                                let ten_multi = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 10);
+                                ten_multi.multi_btn();
+                            } else if($("#result_change_value").val() == "b_2"){ // 곱하기 버튼 + 2진수 일시
+                                let two_multi = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 2);
+                                $("#print_area").html(two_multi.change_from_ten_to_two(Number($("#left_del_num").val())*Number($("#right_del_num").val())));
+                            } else if($("#result_change_value").val() == "b_8"){ // 곱하기 버튼 + 8진수 일시
+                                let eight_multi = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 8);
+                                $("#print_area").html(eight_multi.change_from_ten_to_two(Number($("#left_del_num").val())*Number($("#right_del_num").val())));
+                            } else if($("#result_change_value").val() == "b_16"){ // 곱하기 버튼 + 16진수 일시
+                                let sixteen_multi = new Change_number($("#left_del_num").val(),$("#right_del_num").val(), 16);
+                                $("#print_area").html(sixteen_multi.change_from_ten_to_sixteen(Number($("#left_del_num").val())*Number($("#right_del_num").val())));
+                            } else {
+                                return 0;
+                            }
+                        }
+                    break;
+                    case "alert_box":   //경고창을 누르면 숨기기
+                        $(".alert_box").css("display" ,"none");
+                    break;
+                    case "del_box":
+                        $(".alert_box").css("display" ,"none");
+                    break;
+                    case "empty_num":
+                        $(".alert_box").css("display" ,"none");
+                    break;
+                }
+            })
+        </script>
+    </body>
+</html>
