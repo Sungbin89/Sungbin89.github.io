@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <link rel="shortcut icon" type="image" href="./favorite.png">
+        <title>회원가입</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="stylesheet" href="favorite.css">
+        <script src="./JQ/jQuery360.min.js"></script>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <section class="make_id">
+            <h2 class="make_id_title">회원가입</h2>
+            <!--<form action="#" method="POST">--> <!--favorite_makeid.php-->
+            <form action="./favorite_makeid.php" method="POST">
+                <p class="make_id_ment">아이디</p>
+                <input id="make_id_input" class="make_id_input" type="text" name="make_id_input" required>
+                <button id="check_id_dupli" class="check_id_dupli" button> 확인하기</button>
+                <p class="check_id_ment">ID확인</p>
+                <p class="make_id_ment">이름</p>
+                <input class="make_id_input" type="text" name="make_name_input" >
+                <!-- <button id="" class="check_id_dupli"> 확인하기</button>
+                <p class="check_name_ment">지워</p> -->
+                <!--</form>-->
+                <p class="make_id_ment">닉네임</p>
+                <input id="make_nickname_input" class="make_id_input" type="text" name="make_nickname_input" required>
+                <button id="" class="check_nickname_dupli" button> 확인하기</button>
+                <p class="check_nickname_ment">닉네임확인</p>
+
+                <p class="make_pw_ment">비밀번호</p>
+                <input id ="make_pw_input_f" class="make_pw_input_f" type="password" required>
+                <p class="make_pw_ment">비밀번호 확인</p>
+                <input id="make_pw_input_s" class="make_pw_input_s" type="password" name="make_pw_input" required>
+                <p class="check_pw_ment">비밀번호 확인</p>
+
+                <p class="">휴대전화</p>
+                <input id ="" class="make_input_center" type="number" name="make_pn_input" placeholder="-없이 적어주세요">
+                <!-- <button id="" class="check_id_dupli"> 확인하기</button>
+                <p class="check_pn_ment">지워</p> -->
+
+                <p class="make_pw_ment">이메일</p>
+                <input id ="" class="make_input_center" type="email" name="make_email_input" placeholder="이메일">
+                <!-- <button id="" class="check_id_dupli"> 확인하기</button>
+                <p class="check_email_ment">지워</p> -->
+
+                <p class="make_pw_ment">생년월일</p>
+                <input id ="" class="make_input_center" type="date" name="make_date_input" placeholder="생년월일">
+                
+                <canvas id="make_check_captcha" class="make_check_captcha"></canvas>
+                <p class="refresh_button"><i class="fa fa-refresh" aria-hidden="true"></i></p>
+                <input class="make_input_captcha"t ype="number" maxlength="4" required>
+                <p class="check_captcha_ment">캔버스 일치 확인</p>
+                <input class="make_submit_button" type="submit" name="submit" value="가입하기">
+                <button class="make_goback_button">나가기</button>
+            </form>
+            
+            <input id="hidden_id" type="hidden" value="0">
+            <input id="hidden_pw" type="hidden" value="0">
+            <input id="hidden_nick" type="hidden" value="0">
+            <input id="hidden_canvas" type="hidden" value="0">
+            
+        </section>
+        <div class="make_check_all">
+            <p>다시 입력해주세요</p>
+            <button>닫기</button>
+        </div>
+        <script>
+            //캡챠 생성
+                display_number = (print_number) => {
+                const insert_captach = document.getElementById("make_check_captcha");
+                var ctx = insert_captach.getContext("2d");
+                ctx.font = "100px D2Coding";
+                ctx.fillStyle = "darkblue";
+                ctx.textAlign = "center";
+                ctx.clearRect(0, 0, insert_captach.width, insert_captach.height);
+                ctx.fillText(print_number, insert_captach.width/2, insert_captach.height/1.3);
+                }
+                //캡챠 랜덤값 생성
+                generate_random_number =() => {
+                    const magic_number = Math.floor(Math.random()*(9999-1000+1))+1000;
+                    display_number(magic_number);
+                    return magic_number;
+                    
+                }
+                (main = () => {
+                    // CAPTCHAR START
+                    let random_number = generate_random_number();
+                    //Event Area
+                    //새로고침 누르면 랜덤값 변경
+                    $(".refresh_button").on("click", function(){
+                        random_number =  generate_random_number();
+                    });
+                    //버튼 클릭 후 값넘겨서 아이디 중복확인
+                    $("#check_id_dupli").on("click", function(){
+                        let check_this =  $("#make_id_input").val();
+                        $.ajax({
+                            url:`./favorite_makeid.php?make_id_input=${check_this}`,
+                            type: 'GET',
+                            success:function(item){
+                                $(".check_id_ment").html(item);
+                            }
+                        });
+                    });
+                    //버튼 클릭 후 값넘겨서 닉네임 중복확인
+                    $(".check_nickname_dupli").on("click", function(){
+                        if(!(/^[a-zA-Z0-9]+$/).test($("#make_nickname_input").val())){
+                            $("#make_nickname_input").val($("#make_nickname_input").val().substring(0, $("#make_nickname_input").val().length -1)) && $(".check_nickname_ment").html("ID는 영문과 숫자로만 조합 할 수 있습니다.");
+                        } else {
+                            let check_this =  $("#make_nickname_input").val();
+                            $.ajax({
+                                url:`./favorite_makeid.php?make_nickname_input=${check_this}`,
+                                type: 'GET',
+                                success:function(item){
+                                    $(".check_nickname_ment").html(item);
+                                }
+                            });
+                        }
+                    });
+                    $(".make_submit_button").on("click", function(e){
+                        !(($("#hidden_id").val() == "1") && ($("#hidden_pw").val() == "1") && ($("#hidden_nick").val() == "1") && $("#hidden_canvas").val() == "1") && $(".make_check_all").stop().show() && e.preventDefault();
+                    })
+                    // 값의 일치 확인
+                    $("#make_pw_input_s").on("keyup", function(){
+                        $("#make_pw_input_s").val() != $("#make_pw_input_f").val() && $("#hidden_pw").val("0") && $(".check_pw_ment").html("비밀번호가 틀렸습니다.");
+                        $("#make_pw_input_s").val() == $("#make_pw_input_f").val() && $("#hidden_pw").val("1") && $(".check_pw_ment").html("비밀번호가 일치합니다.").css("color", "black");
+                    });
+                    // 나가기 버튼
+                    $(".make_goback_button").on("click", function(){
+                        location.href = "./Main_favorite.html"
+                    });
+                    $(".make_check_all").on("click", function(){
+                        $(".make_check_all").hide();
+                    });
+                    $(".make_check_all>button").on("click", function(){
+                        $(".make_check_all").hide();
+                    });
+                    //캡챠 일치 확인
+                    $(".make_input_captcha").on("keyup", function(){
+                        random_number != $(".make_input_captcha").val() && $(".check_captcha_ment").html("다시입력해주세요.").css("color", "red") && $("#hidden_canvas").val("0");
+                        random_number == $(".make_input_captcha").val() && $(".check_captcha_ment").html("일치합니다.").css("color", "black") && $("#hidden_canvas").val("1");
+                    });
+
+                })();
+        </script>
+    </body>
+</html>

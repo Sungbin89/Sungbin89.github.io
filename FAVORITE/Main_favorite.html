@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <title>즐겨찾기</title>
+        <link rel="shortcut icon" type="image" href="./favorite.png">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+        <script src="./JQ/jQuery360.min.js"></script>
+        <link rel="stylesheet" href="./favorite.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+        </style>
+    </head>
+    <body>
+        <h1>즐겨찾기</h1>
+        <section class="login_area">
+            <h2 class="login_title">Log In</h2>
+                <p class="login_id">ID</p>
+                <input id="for_login_id" class="for_login" type="text" name="login_id" required  value="admin">
+                <p class="login_password">Password</p>
+                <input id="for_login_pw" class="for_login" type="password" name="login_pwd" required value="1234">
+                <canvas id="login_canvas"></canvas>
+                <div class="login_refresh" id="login_cc_refresh"><i class="fa fa-refresh" aria-hidden="true"></i></div>
+                <input class="login_canvas_input" type="number" maxlength="4" required placeholder="숫자를 적어주세요">
+                <p class="login_check_canvas">입력해주세요</p>
+                <input class="enter_button" type="submit" name="show_list" value="로그인">
+            <div class="go_make_id">회원가입</div>
+        </section>
+        <div class="login_error id_error">
+            <p>아이디 혹은 비밀번호를<br>
+                확인해주세요</p>
+        </div>
+        <div class="login_error cap_error">
+            <p>캡챠를 확인해주세요</p>
+        </div>
+        <div class="login_id_select">
+            <ul>
+                <li>아이디 선택</li>
+                <li id="login_chose_admin">관리자 아이디 로그인</li>
+                <li id="login_chose_normal">일반유저 아이디 로그인</li>
+            </ul>
+        </div>
+        <script>
+            $(".go_make_id").on("click", function(){
+                location.href="./favorite_makeid.html";
+            });
+            display_number = (print_number) => {
+                const st_log_cc = document.getElementById("login_canvas");
+                var ctx = st_log_cc.getContext("2d");
+                ctx.font = "100px D2Coding";
+                ctx.fillStyle = "rgb(53, 54, 58)";
+                ctx.textAlign = "center";
+                ctx.clearRect(0, 0, login_canvas.width, login_canvas.height);
+                ctx.fillText(print_number, login_canvas.width/2, login_canvas.height/1.3);
+            }
+            generate_random_number =() => {
+                const magic_number = Math.floor(Math.random()*(9999-1000+1))+1000;
+                display_number(magic_number);
+                return magic_number;
+            }
+            (main = () => {
+                // CAPTCHAR START
+                let random_number = generate_random_number();
+                //Event Area
+                $("#login_cc_refresh").on("click", function(){
+                    random_number =  generate_random_number();
+                });
+                $(".login_error").on("click", function(){
+                    $(".login_error").hide();
+                });
+                $(".login_canvas_input").on("keyup", function(){
+                    random_number != $(".login_canvas_input").val() && $(".login_check_canvas").html("다시입력해주세요");
+                    random_number == $(".login_canvas_input").val() && $(".login_check_canvas").html("일치합니다").css("color", "#7b9acc");
+                });
+                $(window).on("keyup", function(e) {
+                    switch (e.target.id){
+                        case "for_login_id":
+                            !(/^[a-zA-Z0-9]*$/).test($("#"+e.target.id).val()) && 
+                            $("#"+e.target.id).val($("#"+e.target.id).val().substring(0, $("#"+e.target.id).val().length -1)) && 
+                            alert("ID는 영문과 숫자로만 조합되어 있습니다.");
+                        break;
+                        case "for_login_pw":
+                            !(/^[a-zA-Z0-9!@#]*$/).test($("#"+e.target.id).val()) && 
+                            $("#"+e.target.id).val($("#"+e.target.id).val().substring(0, $("#"+e.target.id).val().length -1)) && 
+                            alert("비밀번호는 영문과 숫자, !, @, #로 되어있습니다.");
+                        break;
+                    }
+                });
+                $("#login_chose_admin").on("click", function(){
+                    location.href='./favorite_sec.php?mission_complete=change_page&login_id=admin&login_pwd=1234';
+                });
+                $(".login_id_select").on("click", function(){
+                    $(".login_id_select").css("margin-top", "-450px");
+                })
+                $("#login_chose_normal").on("click", function(){
+                    location.href='./favorite_sec.php?mission_complete=change_page&login_id=test1&login_pwd=1234';
+                });
+                $(".enter_button").on("click", function(){
+                if($(".login_canvas_input").val() != random_number){
+                    $(".cap_error").show();
+                    //generate_random_number();
+                    //$(".login_canvas_input").val("입력해주세요"); 
+                } else{
+                    let check_id = $("#for_login_id").val();
+                    let check_pw = $("#for_login_pw").val();
+                    $.ajax({
+                        url:`./favorite_sec.php?login_id=${check_id}&login_pwd=${check_pw}`,
+                        type: 'GET',
+                        success:function(item){
+                            /*if(item == "1"){
+                                $(".id_error").show();
+                            }*/
+                            if(item == "2"){
+                                $(".id_error").show();
+                            } else {
+                                location.href=`./favorite_sec.php?mission_complete=change_page&login_id=${check_id}&login_pwd=${check_pw}`;
+                            }
+                        }
+                    });
+                }
+            });
+            })();
+        </script>
+    </body>
+
+</html>

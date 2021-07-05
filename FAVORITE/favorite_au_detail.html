@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <title>정보관리 수정</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+        <script src="./JQ/jQuery360.min.js"></script>
+        <link rel="stylesheet" href="./favorite.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <h1>정보관리</h1>
+        <section class="info_place">
+            <form>
+                <p>이름</p>
+                <input type="text" class="input_name" name="input_name">
+                <p>아이디</p>
+                <input type="text" class="input_id"name="input_id" required>
+                <button class="check_dupl">중복확인</button>
+                <p>닉네임</p>
+                <input type="text" class="input_nickname"name="input_nickname">
+                <button class="check_dupl">중복확인</button>
+                <p>비밀번호</p>
+                <input type="text" class="input_password"name="input_password">
+                <p>비밀번호확인</p>
+                <input type="text" class="input_password"name="input_password">
+                <p class="check_pw_dupl">불일치</p>
+                <p>휴대전화</p>
+                <select name="" class="input_first_num" id="">
+                    <option value="">010</option>
+                    <option value="">011</option>
+                    <option value="">017</option>
+                    <option value="">018</option>
+                    <option value="">020</option>
+                </select>
+                <p class="input_middile_p">-</p>
+                <input type="number" class="input_second_num"name="input_middle_number">
+                <p class="input_middile_p">-</p>
+                <input type="number" class="input_third_num"name="input_middle_number">
+                <p>이메일</p>
+                <input type="number" class="input_email"name="input_email">
+                <p>생년월일</p>
+                <input type="date" name="input_date" id="">
+                <button class="input_change">수정하기</button>
+                <button class="input_return">탈퇴하기</button>
+            </form>
+            <section>
+                <p>작성내역</p>
+                <ul class="">
+                    <li class="">순서</li>
+                    <li class="">제목</li>
+                    <li class="">URL</li>
+                    <li class="">수정</li>
+                    <li class="">삭제</li>
+                    <li class="">바로가기</li>
+                </ul>
+            </section>
+            <section>
+                <ul class="">
+                    <li class="">순서</li>
+                    <li class="">제목</li>
+                    <li class="">URL</li>
+                    <li class="">수정</li>
+                    <li class="">삭제</li>
+                    <li class="">바로가기</li>
+                </ul>
+            </section>
+            <footer>
+                페이징
+            </footer>
+        </section>
+    </body>
+</html>
